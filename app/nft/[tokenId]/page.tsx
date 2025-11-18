@@ -1,12 +1,12 @@
 import { Metadata } from 'next';
 
 type Props = {
-  params: { tokenId: string }
+  params: Promise<{ tokenId: string }>
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // Fetch the NFT data from your contract
-  const tokenId = params.tokenId;
+  const { tokenId } = await params;
   
   // You'll need to fetch the actual NFT data here
   // For now, using placeholder
@@ -36,12 +36,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default function NFTPage({ params }: Props) {
+export default async function NFTPage({ params }: Props) {
   // Redirect to echo chamber with the token ID
+  const { tokenId } = await params;
   return (
     <script
       dangerouslySetInnerHTML={{
-        __html: `window.location.href = '/echo-chamber#token-${params.tokenId}'`,
+        __html: `window.location.href = '/echo-chamber#token-${tokenId}'`,
       }}
     />
   );
