@@ -104,7 +104,7 @@ import { analyzeVoice } from '../utils/voiceAnalysis';
     return 'text-xs';
   };
 
-  const ProofOfVoice = ({ fid, walletAddress }: ProofOfVoiceProps = {}) => {
+  const ProofOfVoice = ({ fid: _fid, walletAddress }: ProofOfVoiceProps = {}) => {
     const [step, setStep] = useState<Step>('intro');
     const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
     const [assignedWord, setAssignedWord] = useState('');
@@ -140,8 +140,6 @@ import { analyzeVoice } from '../utils/voiceAnalysis';
     
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
     const chunksRef = useRef<Blob[]>([]);
-    const audioContextRef = useRef<AudioContext | null>(null);
-    const analyserRef = useRef<AnalyserNode | null>(null);
     const processedMintRef = useRef<boolean>(false);
   
     // Fetch on-chain voices instead of localStorage
@@ -167,7 +165,7 @@ import { analyzeVoice } from '../utils/voiceAnalysis';
                 } else {
                   timestamp = new Date().toISOString();
                 }
-              } catch (e) {
+              } catch (_e) {
                 console.warn(`Invalid timestamp for voice ${voice.tokenId}:`, voice.timestamp);
                 timestamp = new Date().toISOString();
               }
@@ -278,7 +276,7 @@ import { analyzeVoice } from '../utils/voiceAnalysis';
             stopRecording();
           }
         }, 3000);
-      } catch (err) {
+      } catch (_err) {
         alert('Microphone access denied. Please allow microphone access.');
       }
     };
@@ -383,9 +381,10 @@ import { analyzeVoice } from '../utils/voiceAnalysis';
         
         // Wait for transaction success (handled by useEffect below)
         // The mintData will be updated when the transaction is submitted
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error('Mint error:', error);
-        setMintError(error?.message || 'Failed to mint voice. Please try again.');
+        const errorMessage = error instanceof Error ? error.message : 'Failed to mint voice. Please try again.';
+        setMintError(errorMessage);
         setIsMinting(false);
       }
     };
@@ -448,6 +447,7 @@ import { analyzeVoice } from '../utils/voiceAnalysis';
         // Import ABI
         let ProofOfVoiceABI: readonly unknown[] = [];
         try {
+          // eslint-disable-next-line @typescript-eslint/no-require-imports
           ProofOfVoiceABI = require('./abis/ProofOfVoice.json') as readonly unknown[];
         } catch {
           console.error('ABI not found');
@@ -707,7 +707,7 @@ import { analyzeVoice } from '../utils/voiceAnalysis';
                   You have 3 seconds. Let the emotion guide your voice.
                 </p>
                 <p className="text-sm text-gray-400">
-                  We'll analyze your audio for human characteristics: breath, emotion, natural variation.
+                  We&apos;ll analyze your audio for human characteristics: breath, emotion, natural variation.
                 </p>
               </div>
   
@@ -802,7 +802,7 @@ import { analyzeVoice } from '../utils/voiceAnalysis';
                       {analysisResults.confidenceScore < 70 && (
                         <div className="bg-yellow-900/30 border border-yellow-500/50 rounded-lg p-4">
                           <p className="text-yellow-200 text-sm">
-                            ⚠️ Low confidence score. Try speaking more naturally with emotion, or ensure you're in a real environment with ambient sound.
+                            ⚠️ Low confidence score. Try speaking more naturally with emotion, or ensure you&apos;re in a real environment with ambient sound.
                           </p>
                         </div>
                       )}
