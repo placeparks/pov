@@ -157,7 +157,7 @@ export function useAllVoices() {
         });
 
         const fetchedVoices = await Promise.all(voicePromises);
-        const validVoices = fetchedVoices.filter((voice): voice is VoiceFromContract => voice !== null);
+        const validVoices = fetchedVoices.filter((voice): voice is NonNullable<typeof voice> => voice !== null) as VoiceFromContract[];
         
         // Sort by tokenId descending (newest first)
         validVoices.sort((a, b) => b.tokenId - a.tokenId);
