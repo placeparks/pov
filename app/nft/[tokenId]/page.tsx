@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { createPublicClient, http } from 'viem';
-import { base } from 'viem/chains';
+import { baseSepolia } from 'viem/chains';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
@@ -53,17 +53,26 @@ function getBaseUrl(): string {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { tokenId } = await params;
   const baseUrl = getBaseUrl();
-  const nftImageUrl = `${baseUrl}/api/nft-image/${tokenId}`;
+  
+  // Validate tokenId for metadata
+  const tokenIdNum = tokenId && tokenId !== 'undefined' && tokenId !== 'null' ? Number(tokenId) : null;
+  const isValidTokenId = tokenIdNum !== null && !isNaN(tokenIdNum) && tokenIdNum >= 0;
+  
+  const nftImageUrl = isValidTokenId ? `${baseUrl}/api/nft-image/${tokenId}` : `${baseUrl}/api/nft-image/0`;
   
   // Try to fetch NFT data for better description
   let description = 'View this Proof of Voice NFT on Base';
   try {
+    if (!isValidTokenId) {
+      throw new Error('Invalid tokenId');
+    }
+    
     if (!CONTRACT_ADDRESS || CONTRACT_ADDRESS === '0x0000000000000000000000000000000000000000') {
       throw new Error('Contract address not configured');
     }
     
     const client = createPublicClient({
-      chain: base,
+      chain: baseSepolia,
       transport: http(),
     });
     
@@ -71,7 +80,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       address: CONTRACT_ADDRESS,
       abi: contractABI,
       functionName: 'voices',
-      args: [BigInt(tokenId)],
+      args: [BigInt(tokenIdNum)],
     }) as readonly [unknown, string, string, string, number, bigint, number[]];
     
     const [, word, category, emotion, humanityScore] = voiceData;
@@ -111,6 +120,49 @@ export default async function NFTPage({ params }: Props) {
   const { tokenId } = await params;
   const baseUrl = getBaseUrl();
   
+  // Validate tokenId
+  if (!tokenId || tokenId === 'undefined' || tokenId === 'null') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-black text-white">
+        <div className="max-w-4xl mx-auto px-6 py-8">
+          <div className="text-center py-12">
+            <h1 className="text-2xl font-bold mb-4">Error</h1>
+            <p className="text-gray-400">Invalid token ID. Please check the URL.</p>
+            <Link
+              href="/echo-chamber"
+              className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors mt-6"
+            >
+              <ArrowLeft className="w-5 h-5" />
+              <span>Back to Echo Chamber</span>
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  
+  // Validate tokenId is a valid number
+  const tokenIdNum = Number(tokenId);
+  if (isNaN(tokenIdNum) || tokenIdNum < 0) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-black text-white">
+        <div className="max-w-4xl mx-auto px-6 py-8">
+          <div className="text-center py-12">
+            <h1 className="text-2xl font-bold mb-4">Error</h1>
+            <p className="text-gray-400">Invalid token ID: {tokenId}</p>
+            <Link
+              href="/echo-chamber"
+              className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors mt-6"
+            >
+              <ArrowLeft className="w-5 h-5" />
+              <span>Back to Echo Chamber</span>
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  
   // Fetch NFT data
   let voiceData: {
     word: string;
@@ -128,7 +180,7 @@ export default async function NFTPage({ params }: Props) {
     }
     
     const client = createPublicClient({
-      chain: base,
+      chain: baseSepolia,
       transport: http(),
     });
     
@@ -137,7 +189,7 @@ export default async function NFTPage({ params }: Props) {
       address: CONTRACT_ADDRESS,
       abi: contractABI,
       functionName: 'voices',
-      args: [BigInt(tokenId)],
+      args: [BigInt(tokenIdNum)],
     }) as readonly [unknown, string, string, string, number, bigint, number[]];
     
     const [, word, category, emotion, humanityScore, timestamp] = data;
@@ -148,7 +200,7 @@ export default async function NFTPage({ params }: Props) {
       address: CONTRACT_ADDRESS,
       abi: contractABI,
       functionName: 'tokenURI',
-      args: [BigInt(tokenId)],
+      args: [BigInt(tokenIdNum)],
     }) as string;
     
     if (tokenURI && tokenURI.startsWith('data:application/json;base64,')) {
