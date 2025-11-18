@@ -1,162 +1,121 @@
-# Waitlist Mini App Quickstart
+# Proof of Voice
 
-This is a demo Mini App application built using OnchainKit and the Farcaster SDK. Build a waitlist sign-up mini app for your company that can be published to the Base app and Farcaster. 
+**Immortalize Your Voice on Base**
 
-> [!IMPORTANT]  
-> Before interacting with this demo, please review our [disclaimer](#disclaimer) — there are **no official tokens or apps** associated with Cubey, Base, or Coinbase.
+Proof of Voice is a revolutionary Web3 application that allows users to record their voice, analyze its humanity, and mint it as a unique NFT on Base blockchain. Each voice recording is permanently stored on-chain with emotional analysis, category classification, and audio data.
 
-## Prerequisites
+## 🎤 What is Proof of Voice?
 
-Before getting started, make sure you have:
+Proof of Voice transforms spoken words into immutable, on-chain NFTs. When you speak a single powerful word, the app:
 
-* Base app account
-* A [Farcaster](https://farcaster.xyz/) account
-* [Vercel](https://vercel.com/) account for hosting the application
-* [Coinbase Developer Platform](https://portal.cdp.coinbase.com/) Client API Key
+- **Records your voice** with real-time audio capture
+- **Analyzes authenticity** using advanced voice analysis algorithms that detect:
+  - Natural breath sounds
+  - Speech variability and emotional authenticity
+  - Background noise patterns
+  - Energy distribution
+  - Silence ratios
+- **Calculates a Humanity Score** (0-100%) that verifies you're human, not a bot
+- **Classifies your voice** into categories: cypherpunk, freedom, empathy, heroes, history, or life
+- **Detects emotion** in your delivery (powerful, whispered, calm, etc.)
+- **Mints an NFT** on Base L2 with:
+  - Compressed audio data stored on-chain
+  - Visual SVG representation
+  - Metadata including word, category, emotion, and humanity score
+  - Timestamp and waveform visualization
 
-## Getting Started
+## 🌟 Why Proof of Voice Matters
 
-### 1. Clone this repository 
+### Human Verification in the Age of AI
 
-```bash
-git clone https://github.com/base/demos.git
-```
+In an era where AI-generated content is becoming indistinguishable from human creation, Proof of Voice provides a unique solution:
 
-### 2. Install dependencies:
+- **Bot Resistance**: The voice analysis algorithm specifically detects human characteristics that are extremely difficult for AI to replicate—natural breath sounds, emotional variation, and authentic speech patterns
+- **One Voice Per Human**: The smart contract enforces "one voice per wallet" ensuring each person can only mint once, creating true scarcity and authenticity
+- **On-Chain Permanence**: Unlike traditional social media posts that can be deleted, your voice NFT is permanently stored on the blockchain, creating an immutable record of your humanity
 
-```bash
-cd demos/minikit/waitlist-mini-app-qs
-npm install
-```
+### Digital Identity and Self-Sovereignty
 
-### 3. Configure environment variables
+- **Own Your Voice**: Your voice NFT is truly yours—stored on-chain, tradeable, and verifiable
+- **Prove Your Humanity**: In a world increasingly filled with bots and AI, your voice NFT serves as cryptographic proof that you are human
+- **Emotional Time Capsule**: Capture a moment in time—your emotional state, your voice, your word—forever preserved on the blockchain
 
-Create a `.env.local` file and add your environment variables:
+### Community and Social Impact
 
-```bash
-NEXT_PUBLIC_PROJECT_NAME="Your App Name"
-NEXT_PUBLIC_ONCHAINKIT_API_KEY=<Replace-WITH-YOUR-CDP-API-KEY>
-NEXT_PUBLIC_URL=
-NEXT_PUBLIC_CONTRACT_ADDRESS=<Your-Deployed-Contract-Address>
-```
+- **The Echo Chamber**: View all minted voices in a beautiful gallery, creating a collective archive of human expression
+- **Farcaster Integration**: Share your voice NFT directly on Farcaster, building community around authentic human voices
+- **Base L2 Efficiency**: Low-cost minting on Base makes voice NFTs accessible to everyone, not just crypto whales
 
-### 4. Run locally:
+## 🎨 Features
 
-```bash
-npm run dev
-```
+### Voice Recording & Analysis
+- Real-time audio recording with waveform visualization
+- Advanced voice analysis detecting human characteristics
+- Humanity score calculation (minimum 60% required to mint)
+- Automatic category and emotion classification
 
-## Customization
+### NFT Minting
+- ERC721 NFT standard on Base L2
+- On-chain audio storage (compressed, max 20KB)
+- Beautiful SVG artwork generated from your voice data
+- Metadata including word, category, emotion, humanity score, and timestamp
 
-### Update Manifest Configuration
+### The Echo Chamber
+- Gallery of all minted voices
+- Statistics: total supply, average score, unique categories
+- Audio playback of minted voices
+- Ownership-based sharing to Farcaster
 
-The `minikit.config.ts` file configures your manifest located at `app/.well-known/farcaster.json`.
+### MiniKit Integration
+- Native Farcaster Mini App experience
+- QuickAuth for Farcaster identity verification
+- Seamless wallet connection via OnchainKit
+- Direct sharing to Farcaster casts
 
-**Skip the `accountAssociation` object for now.**
+## 🔐 Technical Innovation
 
-To personalize your app, change the `name`, `subtitle`, and `description` fields and add images to your `/public` folder. Then update their URLs in the file.
+### Smart Contract (`POV.sol`)
+- **One Voice Per Wallet**: Enforced at the contract level
+- **Audio Size Limit**: 20KB maximum to ensure efficient on-chain storage
+- **Humanity Score Gate**: Minimum 60% required to prevent bot mints
+- **Mint Fee**: 0.001 ETH to prevent spam
+- **Token URI**: Dynamic SVG generation with base64 encoding
 
-## Deployment
+### Voice Analysis Algorithm
+The app uses sophisticated audio analysis to verify human speech:
+- **Breath Sound Detection**: Identifies natural breathing patterns
+- **Speech Variability**: Measures natural variation in speech
+- **Energy Distribution**: Analyzes frequency distribution patterns
+- **Background Noise Analysis**: Detects authentic recording environment
+- **Silence Ratio**: Calculates natural pauses in speech
 
-### 1. Deploy to Vercel
+### On-Chain Storage
+- Audio data compressed and stored as hex in the smart contract
+- SVG artwork generated dynamically from voice metadata
+- All data permanently stored on Base L2 blockchain
 
-```bash
-vercel --prod
-```
+## 🎯 Use Cases
 
-You should have a URL deployed to a domain similar to: `https://your-vercel-project-name.vercel.app/`
+- **Digital Identity**: Prove your humanity in Web3 spaces
+- **Memorialization**: Preserve meaningful words and moments
+- **Artistic Expression**: Create unique audio art NFTs
+- **Community Building**: Share voices and build connections on Farcaster
+- **Historical Archive**: Contribute to a permanent record of human voices
 
-### 2. Update environment variables
+## 🚀 Built With
 
-Add your production URL to your local `.env` file:
+- **Next.js** - React framework
+- **OnchainKit** - Base MiniKit integration
+- **Wagmi** - Ethereum React hooks
+- **Tailwind CSS** - Styling
+- **Solidity** - Smart contract development
+- **Base L2** - Ethereum Layer 2 blockchain
+- **Farcaster** - Decentralized social network
 
-```bash
-NEXT_PUBLIC_PROJECT_NAME="Your App Name"
-NEXT_PUBLIC_ONCHAINKIT_API_KEY=<Replace-WITH-YOUR-CDP-API-KEY>
-NEXT_PUBLIC_URL=https://your-vercel-project-name.vercel.app/
-NEXT_PUBLIC_CONTRACT_ADDRESS=<Your-Deployed-Contract-Address>
-```
+## 📜 License
 
-### 3. Upload environment variables to Vercel
-
-Add environment variables to your production environment:
-
-```bash
-vercel env add NEXT_PUBLIC_PROJECT_NAME production
-vercel env add NEXT_PUBLIC_ONCHAINKIT_API_KEY production
-vercel env add NEXT_PUBLIC_URL production
-vercel env add NEXT_PUBLIC_CONTRACT_ADDRESS production
-```
-
-## Account Association
-
-### 1. Sign Your Manifest
-
-1. Navigate to [Farcaster Manifest tool](https://farcaster.xyz/~/developers/mini-apps/manifest)
-2. Paste your domain in the form field (ex: your-vercel-project-name.vercel.app)
-3. Click the `Generate account association` button and follow the on-screen instructions for signing with your Farcaster wallet
-4. Copy the `accountAssociation` object
-
-### 2. Update Configuration
-
-Update your `minikit.config.ts` file to include the `accountAssociation` object:
-
-```ts
-export const minikitConfig = {
-    accountAssociation: {
-        "header": "your-header-here",
-        "payload": "your-payload-here",
-        "signature": "your-signature-here"
-    },
-    frame: {
-        // ... rest of your frame configuration
-    },
-}
-```
-
-### 3. Deploy Updates
-
-```bash
-vercel --prod
-```
-
-## Testing and Publishing
-
-### 1. Preview Your App
-
-Go to [base.dev/preview](https://base.dev/preview) to validate your app:
-
-1. Add your app URL to view the embeds and click the launch button to verify the app launches as expected
-2. Use the "Account association" tab to verify the association credentials were created correctly
-3. Use the "Metadata" tab to see the metadata added from the manifest and identify any missing fields
-
-### 2. Publish to Base App
-
-To publish your app, create a post in the Base app with your app's URL.
-
-## Learn More
-
-For detailed step-by-step instructions, see the [Create a Mini App tutorial](https://docs.base.org/docs/mini-apps/quickstart/create-new-miniapp/) in the Base documentation.
-
+MIT License - See LICENSE file for details
 
 ---
 
-## Disclaimer  
-
-This project is a **demo application** created by the **Base / Coinbase Developer Relations team** for **educational and demonstration purposes only**.  
-
-**There is no token, cryptocurrency, or investment product associated with Cubey, Base, or Coinbase.**  
-
-Any social media pages, tokens, or applications claiming to be affiliated with, endorsed by, or officially connected to Cubey, Base, or Coinbase are **unauthorized and fraudulent**.  
-
-We do **not** endorse or support any third-party tokens, apps, or projects using the Cubey name or branding.  
-
-> [!WARNING]
-> Do **not** purchase, trade, or interact with any tokens or applications claiming affiliation with Coinbase, Base, or Cubey.  
-> Coinbase and Base will never issue a token or ask you to connect your wallet for this demo.  
-
-For official Base developer resources, please visit:  
-- [https://base.org](https://base.org)  
-- [https://docs.base.org](https://docs.base.org)  
-
----
+**Your voice, immortalized on-chain. Forever.**
