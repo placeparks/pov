@@ -33,27 +33,61 @@ export default function EchoChamber() {
   const userAddress = address?.toLowerCase();
   
   const shareOnFarcaster = async (voice: typeof voices[0]) => {
-    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
-    const tokenUrl: string = `${baseUrl}/echo-chamber#token-${voice.tokenId}`;
+    // Get the correct base URL - prefer production URL over localhost
+    const getBaseUrl = () => {
+      if (typeof window === 'undefined') {
+        // Server-side: use environment variables
+        return process.env.NEXT_PUBLIC_URL || 
+               (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : 
+               (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'));
+      }
+      // Client-side: use window.location but prefer production URL from env if available
+      const envUrl = process.env.NEXT_PUBLIC_URL;
+      if (envUrl && !envUrl.includes('localhost')) {
+        return envUrl;
+      }
+      return window.location.origin;
+    };
+    
+    const baseUrl = getBaseUrl();
+    // Use a dedicated NFT page URL that has proper meta tags for preview
+    const tokenUrl: string = `${baseUrl}/nft/${voice.tokenId}`;
     
     // Simpler share text without special characters that might break encoding
-    const shareText = `Just minted my Proof of Voice NFT!\n\n${voice.word} (${voice.category})\nHumanity Score: ${voice.humanityScore}%\n\n${tokenUrl}\n\n#ProofOfVoice #Base`;
+    const shareText = `Just minted my Proof of Voice NFT!\n\n${voice.word} (${voice.category})\nHumanity Score: ${voice.humanityScore}%\n\n#ProofOfVoice #Base`;
+    
+    console.log('Share initiated for token:', voice.tokenId);
+    console.log('Base URL:', baseUrl);
+    console.log('Token URL:', tokenUrl);
+    console.log('composeCastAsync available:', !!composeCastAsync);
     
     // Priority 1: Try OnchainKit's composeCastAsync (works in Farcaster frames)
     if (composeCastAsync) {
       try {
+        // Include both the NFT page URL and the image URL for better preview
+        const imageUrl = `${baseUrl}/api/nft-image/${voice.tokenId}`;
+        console.log('Attempting to compose cast with:', { text: shareText, embeds: [tokenUrl, imageUrl] });
+        
         const result = await composeCastAsync({
           text: shareText,
-          embeds: [tokenUrl],
+          embeds: [tokenUrl, imageUrl], // Include both page and image for better preview
         });
         
-        if (result?.cast) {
-          console.log('Cast created successfully via OnchainKit');
+        console.log('Compose cast result:', result);
+        
+        if (result?.cast?.hash) {
+          console.log('Cast created successfully via OnchainKit:', result.cast.hash);
           return;
+        } else {
+          console.log('No cast hash returned, user may have cancelled');
+          // Don't return here, fall through to manual sharing
         }
       } catch (composeError) {
-        console.log('OnchainKit compose failed:', composeError);
+        console.error('OnchainKit compose failed with error:', composeError);
+        // Fall through to manual sharing
       }
+    } else {
+      console.log('composeCastAsync not available, using manual sharing');
     }
     
     // Priority 2: Copy to clipboard and direct user to Warpcast
