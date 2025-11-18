@@ -1,9 +1,10 @@
 "use client";
 
 import { useAllVoices } from '../../hooks/useAllVoices';
-import { Volume2, Users, Sparkles, Heart, Shield, History, Loader2, ArrowLeft, TrendingUp, Clock, Share2 } from 'lucide-react';
+import { Volume2, Users, Loader2, ArrowLeft, TrendingUp, Clock, Share2 } from 'lucide-react';
 import Link from 'next/link';
-import { useMiniKit, useComposeCast } from '@coinbase/onchainkit/minikit';
+import Image from 'next/image';
+import { useComposeCast } from '@coinbase/onchainkit/minikit';
 import { useAccount } from 'wagmi';
 
 function formatTimeAgo(timestamp: bigint): string {
@@ -22,62 +23,9 @@ function formatTimeAgo(timestamp: bigint): string {
   return 'just now';
 }
 
-// Helper function to get responsive font size based on word length
-function getWordFontSize(word: string, baseSize: string = 'text-3xl'): string {
-  const length = word.length;
-  if (length <= 6) return baseSize; // text-3xl
-  if (length <= 8) return 'text-2xl';
-  if (length <= 10) return 'text-xl';
-  if (length <= 12) return 'text-lg';
-  if (length <= 15) return 'text-base';
-  return 'text-sm'; // For very long words
-}
-
-const CATEGORY_ICONS: Record<string, typeof Volume2> = {
-  cypherpunk: Shield,
-  freedom: Sparkles,
-  empathy: Heart,
-  heroes: Users,
-  history: History,
-  life: Volume2,
-};
-
-const CATEGORY_COLORS: Record<string, { bg: string; border: string; text: string }> = {
-  cypherpunk: {
-    bg: 'from-indigo-900/20 to-purple-900/20',
-    border: 'border-indigo-500/30',
-    text: 'text-indigo-400',
-  },
-  freedom: {
-    bg: 'from-orange-900/20 to-red-900/20',
-    border: 'border-orange-500/30',
-    text: 'text-orange-400',
-  },
-  empathy: {
-    bg: 'from-pink-900/20 to-rose-900/20',
-    border: 'border-pink-500/30',
-    text: 'text-pink-400',
-  },
-  heroes: {
-    bg: 'from-slate-900/20 to-gray-900/20',
-    border: 'border-slate-500/30',
-    text: 'text-slate-400',
-  },
-  history: {
-    bg: 'from-amber-900/20 to-yellow-900/20',
-    border: 'border-amber-500/30',
-    text: 'text-amber-400',
-  },
-  life: {
-    bg: 'from-emerald-900/20 to-green-900/20',
-    border: 'border-emerald-500/30',
-    text: 'text-emerald-400',
-  },
-};
 
 export default function EchoChamber() {
   const { voices, totalSupply, isLoading } = useAllVoices();
-  const { context } = useMiniKit();
   const { address } = useAccount();
   const { composeCastAsync } = useComposeCast();
   
@@ -145,7 +93,7 @@ export default function EchoChamber() {
         document.body.removeChild(textarea);
         window.open('https://warpcast.com/~/compose', '_blank');
         alert('Text copied! Paste it in Warpcast to share.');
-      } catch (err) {
+      } catch {
         document.body.removeChild(textarea);
         alert('Please copy this text manually:\n\n' + shareText);
         window.open('https://warpcast.com/~/compose', '_blank');
@@ -263,10 +211,13 @@ export default function EchoChamber() {
                     {/* NFT SVG Image */}
                     {voice.svgImage ? (
                       <div className="relative rounded-xl overflow-hidden border border-white/10 bg-black/20 shadow-lg hover:shadow-2xl hover:shadow-purple-500/20 transition-all">
-                        <img 
+                        <Image 
                           src={voice.svgImage} 
                           alt={`Proof of Voice #${voice.tokenId} - ${voice.word}`}
+                          width={800}
+                          height={800}
                           className="w-full h-auto"
+                          unoptimized
                         />
                         {/* Share Button Overlay - Only show if user owns this NFT */}
                         {userAddress && voice.owner && userAddress === voice.owner && (
