@@ -12,7 +12,7 @@ try {
   console.warn('ProofOfVoice ABI not found. Please create abis/ProofOfVoice.json');
 }
 
-const CONTRACT_ADDRESS = (process.env.NEXT_PUBLIC_CONTRACT_ADDRESS || '0x0000000000000000000000000000000000000000') as Address;
+const CONTRACT_ADDRESS = (process.env.CONTRACT_ADDRESS || '0x0000000000000000000000000000000000000000') as Address;
 
 export interface VoiceFromContract {
   tokenId: number;
