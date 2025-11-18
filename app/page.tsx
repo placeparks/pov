@@ -165,7 +165,7 @@ import { analyzeVoice } from '../utils/voiceAnalysis';
                 } else {
                   timestamp = new Date().toISOString();
                 }
-              } catch (_e) {
+              } catch {
                 console.warn(`Invalid timestamp for voice ${voice.tokenId}:`, voice.timestamp);
                 timestamp = new Date().toISOString();
               }
@@ -276,7 +276,7 @@ import { analyzeVoice } from '../utils/voiceAnalysis';
             stopRecording();
           }
         }, 3000);
-      } catch (_err) {
+      } catch {
         alert('Microphone access denied. Please allow microphone access.');
       }
     };
@@ -549,8 +549,8 @@ import { analyzeVoice } from '../utils/voiceAnalysis';
               </p>
               <div className="bg-purple-900/30 border border-purple-500/30 rounded-lg p-4 max-w-xl mx-auto">
                 <p className="text-sm text-gray-300">
-                  <strong className="text-purple-400">The Innovation:</strong> Real-time voice analysis verifies you're human. 
-                  We check for breath sounds, natural variation, and emotional authenticity. Bots can't fake being alive.
+                  <strong className="text-purple-400">The Innovation:</strong> Real-time voice analysis verifies you&apos;re human. 
+                  We check for breath sounds, natural variation, and emotional authenticity. Bots can&apos;t fake being alive.
                 </p>
               </div>
             </div>
