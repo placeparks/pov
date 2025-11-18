@@ -17,6 +17,7 @@ import { useProofOfVoice } from '../hooks/useContract';
 import { useAllVoices } from '../hooks/useAllVoices';
 import { audioToHex, hexToAudio } from '../utils/audioCompression';
 import { analyzeVoice } from '../utils/voiceAnalysis';
+
   
   // Type definitions
   type Category = 'cypherpunk' | 'freedom' | 'empathy' | 'heroes' | 'history' | 'life';
