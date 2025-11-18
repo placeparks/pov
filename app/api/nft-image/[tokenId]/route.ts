@@ -20,12 +20,25 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ tokenId: string }> }
 ) {
+  let tokenId: string | undefined;
   try {
-    const { tokenId } = await params;
+    const resolvedParams = await params;
+    tokenId = resolvedParams.tokenId;
+
+    // Validate tokenId
+    if (!tokenId || tokenId === 'undefined' || tokenId === 'null') {
+      throw new Error('Invalid tokenId parameter');
+    }
 
     // Validate contract address
     if (!CONTRACT_ADDRESS || CONTRACT_ADDRESS === '0x0000000000000000000000000000000000000000') {
       throw new Error('Contract address not configured');
+    }
+
+    // Validate tokenId is a valid number
+    const tokenIdNum = Number(tokenId);
+    if (isNaN(tokenIdNum) || tokenIdNum < 0) {
+      throw new Error(`Invalid tokenId: ${tokenId}`);
     }
 
     // Create a public client to read from the blockchain
@@ -39,12 +52,12 @@ export async function GET(
       address: CONTRACT_ADDRESS,
       abi: contractABI,
       functionName: 'tokenURI',
-      args: [BigInt(tokenId)],
+      args: [BigInt(tokenIdNum)],
     });
 
     // The tokenURI is a base64 encoded JSON with the SVG
     // Format: data:application/json;base64,{base64data}
-    if (tokenURI.startsWith('data:application/json;base64,')) {
+    if (tokenURI && typeof tokenURI === 'string' && tokenURI.startsWith('data:application/json;base64,')) {
       const base64Data = tokenURI.replace('data:application/json;base64,', '');
       const jsonData = Buffer.from(base64Data, 'base64').toString('utf-8');
       const metadata = JSON.parse(jsonData);
@@ -88,14 +101,19 @@ export async function GET(
       },
     });
   } catch (error) {
-    console.error('Error fetching NFT image:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const displayTokenId = tokenId || 'unknown';
+    console.error('Error fetching NFT image:', errorMessage, { tokenId: displayTokenId, error });
 
     // Return error SVG
     const errorSVG = `
       <svg width="800" height="800" xmlns="http://www.w3.org/2000/svg">
-        <rect width="800" height="800" fill="#ff0000"/>
-        <text x="400" y="400" font-family="Arial" font-size="32" fill="#ffffff" text-anchor="middle">
-          Error loading NFT
+        <rect width="800" height="800" fill="#1a1a2e"/>
+        <text x="400" y="380" font-family="Arial" font-size="32" fill="#ffffff" text-anchor="middle">
+          Error loading NFT #${displayTokenId}
+        </text>
+        <text x="400" y="420" font-family="Arial" font-size="24" fill="#ff6b6b" text-anchor="middle">
+          ${errorMessage}
         </text>
       </svg>
     `;
