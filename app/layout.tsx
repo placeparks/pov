@@ -18,20 +18,6 @@ export async function generateMetadata(): Promise<Metadata> {
     description: minikitConfig.miniapp.description,
     keywords: ['voice', 'nft', 'base', 'farcaster', 'audio', 'humanity', 'proof-of-voice', 'blockchain', 'on-chain', 'voice analysis'],
     authors: [{ name: 'Proof of Voice' }],
-    openGraph: {
-      type: 'website',
-      title: minikitConfig.miniapp.ogTitle || minikitConfig.miniapp.name,
-      description: minikitConfig.miniapp.ogDescription || minikitConfig.miniapp.description,
-      images: [minikitConfig.miniapp.ogImageUrl || `${ROOT_URL}/blue-hero.png`],
-      url: ROOT_URL,
-      siteName: 'Proof of Voice',
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: minikitConfig.miniapp.ogTitle || minikitConfig.miniapp.name,
-      description: minikitConfig.miniapp.ogDescription || minikitConfig.miniapp.description,
-      images: [minikitConfig.miniapp.ogImageUrl || `${ROOT_URL}/blue-hero.png`],
-    },
     icons: {
       icon: minikitConfig.miniapp.iconUrl || `${ROOT_URL}/blue-icon.png`,
       apple: minikitConfig.miniapp.iconUrl || `${ROOT_URL}/blue-icon.png`,
