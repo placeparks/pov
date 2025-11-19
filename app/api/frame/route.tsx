@@ -9,47 +9,38 @@ const ROOT_URL =
     ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
     : 'http://localhost:3000');
 
-// Initialize Frog
 const app = new Frog({
   basePath: '/api/frame',
   title: 'Proof of Voice',
-  // Hub API for Frame validation (optional but recommended)
-  // hub: {
-  //   apiUrl: 'https://hubs.airstack.xyz',
-  //   fetchOptions: {
-  //     headers: {
-  //       'x-airstack-hubs': process.env.AIRSTACK_API_KEY || '',
-  //     },
-  //   },
-  // },
 });
 
-// Frame image - shows the initial preview
+// Root frame – hero + entry point
 app.frame('/', (c) => {
-  return c.res({
-    image: `${ROOT_URL}/blue-hero.png`, // Your hero image
-    imageAspectRatio: '1:1',
-    intents: [
-      <Button key="mint" value="mint" action="/api/frame/mint">🎤 Mint Your Voice</Button>,
-      <Button.Link key="open" href={ROOT_URL}>🌐 Open Full App</Button.Link>,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ] as any,
-  });
-});
-
-// Handle the mint button click
-app.frame('/mint', (c) => {
-  const fid = c.frameData?.fid || '';
-  
-  // Redirect to the main app for minting
   return c.res({
     image: `${ROOT_URL}/blue-hero.png`,
     imageAspectRatio: '1:1',
+    // eslint-disable-next-line react/jsx-key
     intents: [
-      <Button.Link key="launch" href={`${ROOT_URL}?fid=${fid}`}>🚀 Launch Proof of Voice</Button.Link>,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ] as any,
+      <Button key="mint" value="mint" action="/mint">🎤 Mint Your Voice</Button>,
+      <Button.Link key="open" href={ROOT_URL}>🌐 Open Full App</Button.Link>,
+    ],
+  });
+});
+
+// Mint frame – sends user into full app with optional fid
+app.frame('/mint', (c) => {
+  const fid = c.frameData?.fid || '';
+
+  return c.res({
+    image: `${ROOT_URL}/blue-hero.png`,
+    imageAspectRatio: '1:1',
     title: 'Proof of Voice - Mint Your Voice',
+    // eslint-disable-next-line react/jsx-key
+    intents: [
+      <Button.Link key="launch" href={`${ROOT_URL}?fid=${fid}`}>
+        🚀 Launch Proof of Voice
+      </Button.Link>,
+    ],
   });
 });
 
