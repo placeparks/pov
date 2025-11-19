@@ -33,7 +33,7 @@ export const minikitConfig = {
     ogTitle: "Proof of Voice",
     ogDescription: "Record your voice, analyze its humanity score, and mint it as a unique NFT on Base.",
     ogImageUrl: `${ROOT_URL}/blue-hero.png`,
-    castShareUrl: `https://warpcast.com/~/compose?text=Check+out+Proof+of+Voice+-+Mint+your+voice+as+an+on-chain+NFT+on+Base+${ROOT_URL}`,
+    castShareUrl: ROOT_URL,
   },
 } as const;
 
