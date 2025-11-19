@@ -6,6 +6,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useComposeCast } from '@coinbase/onchainkit/minikit';
 import { useAccount } from 'wagmi';
+import { sdk } from "@farcaster/miniapp-sdk";
+import { useEffect } from 'react';
 
 function formatTimeAgo(timestamp: bigint): string {
   const now = Date.now();
@@ -28,6 +30,18 @@ export default function EchoChamber() {
   const { voices, totalSupply, isLoading } = useAllVoices();
   const { address } = useAccount();
   const { composeCastAsync } = useComposeCast();
+  
+  // Initialize Farcaster SDK
+  useEffect(() => {
+    const initializeSDK = async () => {
+      try {
+        await sdk.actions.ready();
+      } catch (error) {
+        console.error('Error calling sdk.actions.ready():', error);
+      }
+    };
+    initializeSDK();
+  }, []);
   
   // Get current user's address (lowercase for comparison)
   const userAddress = address?.toLowerCase();
