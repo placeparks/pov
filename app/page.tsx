@@ -4,6 +4,52 @@ import { sdk } from "@farcaster/miniapp-sdk";
 import { useState, useRef, useEffect } from 'react';
 import { Mic, Square, Upload, Volume2, Users, Heart, Shield, History, Sparkles, AlertCircle, CheckCircle, LucideIcon, Loader2 } from 'lucide-react';
 import Link from 'next/link';
+
+// Type definitions for Web Speech API
+interface SpeechRecognition extends EventTarget {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  start(): void;
+  stop(): void;
+  onresult: ((event: SpeechRecognitionEvent) => void) | null;
+  onerror: ((event: SpeechRecognitionErrorEvent) => void) | null;
+  onend: (() => void) | null;
+}
+
+interface SpeechRecognitionEvent {
+  results: SpeechRecognitionResultList;
+}
+
+interface SpeechRecognitionResultList {
+  [index: number]: SpeechRecognitionResult;
+  length: number;
+}
+
+interface SpeechRecognitionResult {
+  [index: number]: SpeechRecognitionAlternative;
+  length: number;
+  isFinal: boolean;
+}
+
+interface SpeechRecognitionAlternative {
+  transcript: string;
+  confidence: number;
+}
+
+interface SpeechRecognitionErrorEvent {
+  error: string;
+  message: string;
+}
+
+interface SpeechRecognitionConstructor {
+  new (): SpeechRecognition;
+}
+
+interface WindowWithSpeechRecognition extends Window {
+  SpeechRecognition?: SpeechRecognitionConstructor;
+  webkitSpeechRecognition?: SpeechRecognitionConstructor;
+}
 import {
   ConnectWallet,
   Wallet,
@@ -273,20 +319,21 @@ import { analyzeVoice } from '../utils/voiceAnalysis';
         };
 
         // Start speech recognition to verify the word
-        const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+        const SpeechRecognition = (window as unknown as WindowWithSpeechRecognition).SpeechRecognition || 
+                                  (window as unknown as WindowWithSpeechRecognition).webkitSpeechRecognition;
         if (SpeechRecognition && assignedWord) {
           const recognition = new SpeechRecognition();
           recognition.continuous = false;
           recognition.interimResults = false;
           recognition.lang = 'en-US';
           
-          recognition.onresult = (event: any) => {
+          recognition.onresult = (event: SpeechRecognitionEvent) => {
             const transcript = event.results[0][0].transcript.trim().toLowerCase();
             setRecognizedWord(transcript);
             console.log('Recognized word:', transcript, 'Expected:', assignedWord.toLowerCase());
           };
           
-          recognition.onerror = (event: any) => {
+          recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
             console.warn('Speech recognition error:', event.error);
             // Don't block if recognition fails - it's optional
           };
@@ -866,10 +913,10 @@ import { analyzeVoice } from '../utils/voiceAnalysis';
                               ? 'bg-green-900/30 text-green-300 border border-green-500/30'
                               : 'bg-yellow-900/30 text-yellow-300 border border-yellow-500/30'
                           }`}>
-                            <span className="font-medium">Recognized:</span> "{recognizedWord}" 
+                            <span className="font-medium">Recognized:</span> &quot;{recognizedWord}&quot; 
                             {recognizedWord.toLowerCase().includes(assignedWord.toLowerCase()) || 
                              assignedWord.toLowerCase().includes(recognizedWord.toLowerCase()) 
-                              ? ' ✓' : ` (Expected: "${assignedWord}")`}
+                              ? ' ✓' : ` (Expected: &quot;${assignedWord}&quot;)`}
                           </div>
                         )}
                       </div>
