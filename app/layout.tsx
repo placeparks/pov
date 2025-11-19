@@ -12,18 +12,20 @@ const resolveRootUrl = () =>
     ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
     : "http://localhost:3000");
 
-const buildMiniAppMetaContent = (rootUrl: string) =>
-  JSON.stringify({
+const buildMiniAppMetaContent = (rootUrl: string) => {
+  const miniapp = minikitConfig.miniapp as typeof minikitConfig.miniapp & { buttonTitle?: string };
+  return JSON.stringify({
     version: minikitConfig.miniapp.version,
     imageUrl: minikitConfig.miniapp.heroImageUrl,
     button: {
-      title: (minikitConfig.miniapp as any).buttonTitle || "🎤 Mint Your Voice",
+      title: miniapp.buttonTitle || "🎤 Mint Your Voice",
       action: {
         type: "launch_miniapp",
         url: rootUrl,
       },
     },
   });
+};
 
 export async function generateMetadata(): Promise<Metadata> {
   const ROOT_URL = resolveRootUrl();
@@ -63,8 +65,10 @@ export async function generateMetadata(): Promise<Metadata> {
       "fc:frame": "vNext",
       "fc:frame:image": minikitConfig.miniapp.heroImageUrl,
       "fc:frame:image:aspect_ratio": "1:1",
-      "fc:frame:button:1":
-        (minikitConfig.miniapp as any).buttonTitle || "🎤 Mint Your Voice",
+      "fc:frame:button:1": (() => {
+        const miniapp = minikitConfig.miniapp as typeof minikitConfig.miniapp & { buttonTitle?: string };
+        return miniapp.buttonTitle || "🎤 Mint Your Voice";
+      })(),
       "fc:frame:button:1:action": "post",
       "fc:frame:button:1:target": FRAME_URL,
       "fc:frame:button:2": "🌐 Open Full App",
