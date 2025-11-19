@@ -4,7 +4,6 @@ import { SafeArea } from "@coinbase/onchainkit/minikit";
 import { minikitConfig } from "../minikit.config";
 import { RootProvider } from "./rootProvider";
 import { FarcasterSDKInit } from "./components/FarcasterSDKInit";
-import { MiniAppReady } from "./components/MiniAppReady";
 import "./globals.css";
 
 const resolveRootUrl = () =>
@@ -110,10 +109,10 @@ export default function RootLayout({
       <html lang="en">
         <head>
           <meta name="fc:miniapp" content={miniAppMetaContent} />
+          <meta httpEquiv="Permissions-Policy" content="microphone=(self)" />
         </head>
         <body className={`${inter.variable} ${sourceCodePro.variable}`}>
           <FarcasterSDKInit />
-          <MiniAppReady />
           <SafeArea>{children}</SafeArea>
         </body>
       </html>
