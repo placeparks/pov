@@ -4,33 +4,26 @@ import type { NextRequest } from 'next/server';
 export function middleware(request: NextRequest) {
   const response = NextResponse.next();
 
-  // Remove X-Frame-Options header if it exists (Next.js or Vercel might set it by default)
-  // This is critical for Farcaster Mini Apps which need to be embedded in iframes
+  // Remove conflicting headers
   response.headers.delete('X-Frame-Options');
-
-  // Set Content-Security-Policy to allow embedding in Farcaster frames
-  // Allow embedding from Farcaster domains, Base.dev preview, and same origin
-  const cspHeader = [
-    "frame-ancestors 'self' https://*.farcaster.xyz https://*.warpcast.com https://*.farcaster.org https://farcaster.xyz https://warpcast.com https://base.dev https://*.base.dev",
-    "default-src 'self'",
-    "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-    "img-src 'self' data: https:",
-    "font-src 'self' data: https://fonts.gstatic.com",
-    "media-src 'self' blob:",
-    "connect-src 'self' https: wss:",
-  ].join('; ');
-
-  response.headers.set('Content-Security-Policy', cspHeader);
-
-  // Set Permissions-Policy to allow microphone access in iframe
-  // This is required for voice recording in embedded miniapps
+  
+  // CRITICAL: Don't set CSP in middleware when embedded in Farcaster
+  // Farcaster's iframe will enforce its own CSP that you cannot override
+  // Instead, work within their allowed domains
+  
+  // Only set frame-ancestors, which controls who can embed YOU
   response.headers.set(
-    'Permissions-Policy',
-    'microphone=(self), camera=(), geolocation=(), interest-cohort=()'
+    'Content-Security-Policy',
+    "frame-ancestors 'self' https://*.farcaster.xyz https://*.warpcast.com https://farcaster.xyz https://warpcast.com https://base.dev https://*.base.dev;"
   );
 
-  // Allow CORS for Farcaster domains
+  // Set Permissions-Policy for microphone (this CAN work in iframe)
+  response.headers.set(
+    'Permissions-Policy',
+    'microphone=(self "https://farcaster.xyz" "https://warpcast.com"), camera=(), geolocation=()'
+  );
+
+  // CORS headers for Farcaster
   const origin = request.headers.get('origin');
   if (origin && (
     origin.includes('farcaster.xyz') ||
@@ -43,7 +36,6 @@ export function middleware(request: NextRequest) {
     response.headers.set('Access-Control-Allow-Credentials', 'true');
   }
 
-  // Handle OPTIONS requests for CORS preflight
   if (request.method === 'OPTIONS') {
     return new NextResponse(null, {
       status: 200,
@@ -54,17 +46,7 @@ export function middleware(request: NextRequest) {
   return response;
 }
 
-// Apply middleware to all routes including API routes
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * Note: We include API routes to ensure headers are set correctly
-     */
-    '/((?!_next/static|_next/image|favicon.ico).*)',
-  ],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|.*\\.png|.*\\.jpg|.*\\.jpeg|.*\\.svg).*)'],
 };
 
