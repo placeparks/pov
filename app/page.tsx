@@ -35,6 +35,7 @@ import { analyzeVoice } from '../utils/voiceAnalysis';
     speechVariability: number;
     energyDistribution: number;
     silenceRatio: number;
+    averageEnergy: number;
     confidenceScore: number;
     waveform?: number[];
   }
@@ -122,6 +123,7 @@ import { analyzeVoice } from '../utils/voiceAnalysis';
     const [showAllVoices, setShowAllVoices] = useState(false);
     const [playingTokenId, setPlayingTokenId] = useState<number | null>(null);
     const [loadingAudio, setLoadingAudio] = useState<number | null>(null);
+    const [recognizedWord, setRecognizedWord] = useState<string | null>(null);
     
     // Contract hook
     const { mint, isMinting: isContractMinting, mintSuccess, hasMinted } = useProofOfVoice();
@@ -219,6 +221,7 @@ import { analyzeVoice } from '../utils/voiceAnalysis';
           speechVariability: analysis.speechVariability,
           energyDistribution: analysis.energyDistribution,
           silenceRatio: analysis.silenceRatio,
+          averageEnergy: analysis.averageEnergy,
           confidenceScore: analysis.confidenceScore,
           waveform: analysis.waveform
         };
@@ -251,7 +254,8 @@ import { analyzeVoice } from '../utils/voiceAnalysis';
         
         mediaRecorderRef.current = mediaRecorder;
         chunksRef.current = [];
-  
+        setRecognizedWord(null); // Reset recognized word
+
         mediaRecorder.ondataavailable = (e) => {
           if (e.data.size > 0) {
             chunksRef.current.push(e.data);
@@ -267,6 +271,44 @@ import { analyzeVoice } from '../utils/voiceAnalysis';
           // Analyze the audio
           await analyzeAudio(blob);
         };
+
+        // Start speech recognition to verify the word
+        const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+        if (SpeechRecognition && assignedWord) {
+          const recognition = new SpeechRecognition();
+          recognition.continuous = false;
+          recognition.interimResults = false;
+          recognition.lang = 'en-US';
+          
+          recognition.onresult = (event: any) => {
+            const transcript = event.results[0][0].transcript.trim().toLowerCase();
+            setRecognizedWord(transcript);
+            console.log('Recognized word:', transcript, 'Expected:', assignedWord.toLowerCase());
+          };
+          
+          recognition.onerror = (event: any) => {
+            console.warn('Speech recognition error:', event.error);
+            // Don't block if recognition fails - it's optional
+          };
+          
+          recognition.onend = () => {
+            // Recognition ended
+          };
+          
+          try {
+            recognition.start();
+            // Auto-stop recognition after 3.5 seconds
+            setTimeout(() => {
+              try {
+                recognition.stop();
+              } catch {
+                // Ignore if already stopped
+              }
+            }, 3500);
+          } catch (err) {
+            console.warn('Speech recognition not available:', err);
+          }
+        }
   
         mediaRecorder.start();
         setIsRecording(true);
@@ -304,9 +346,45 @@ import { analyzeVoice } from '../utils/voiceAnalysis';
         return;
       }
       
+      // Check for silence - reject if too much silence (user didn't speak)
+      if (analysisResults.silenceRatio > 0.7) {
+        setMintError('Recording is too silent. Please speak the word clearly.');
+        return;
+      }
+      
+      // Check for minimum energy - reject if audio is too quiet
+      if (analysisResults.averageEnergy < 0.005) {
+        setMintError('Recording is too quiet. Please speak louder and closer to the microphone.');
+        return;
+      }
+      
+      // Check for minimum duration of actual speech (accounting for silence)
+      const speechDuration = analysisResults.duration * (1 - analysisResults.silenceRatio);
+      if (speechDuration < 0.3) {
+        setMintError('Recording is too short. Please speak the word clearly for at least 0.5 seconds.');
+        return;
+      }
+      
+      // Check if the recognized word matches the assigned word (if speech recognition is available)
+      if (recognizedWord && assignedWord) {
+        const recognizedLower = recognizedWord.toLowerCase().trim();
+        const assignedLower = assignedWord.toLowerCase().trim();
+        
+        // Check for exact match or if the recognized word contains the assigned word
+        // (to handle cases where user says "the word is X" or similar)
+        const wordsMatch = recognizedLower === assignedLower || 
+                          recognizedLower.includes(assignedLower) ||
+                          assignedLower.includes(recognizedLower);
+        
+        if (!wordsMatch) {
+          setMintError(`Word verification failed. You said "${recognizedWord}" but should have said "${assignedWord}". Please try again.`);
+          return;
+        }
+      }
+      
       // Check humanity score
       if (analysisResults.confidenceScore < 60) {
-        setMintError('Humanity score too low. Minimum score is 60%.');
+        setMintError('Humanity score too low. Minimum score is 60%. Please speak naturally with emotion.');
         return;
       }
       
@@ -426,6 +504,7 @@ import { analyzeVoice } from '../utils/voiceAnalysis';
       setAnalysisResults(null);
       setMintedId(null);
       setMintError(null);
+      setRecognizedWord(null);
       processedMintRef.current = false; // Reset processed flag for new cycle
     };
   
