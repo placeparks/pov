@@ -23,6 +23,13 @@ export function middleware(request: NextRequest) {
 
   response.headers.set('Content-Security-Policy', cspHeader);
 
+  // Set Permissions-Policy to allow microphone access in iframe
+  // This is required for voice recording in embedded miniapps
+  response.headers.set(
+    'Permissions-Policy',
+    'microphone=(self), camera=(), geolocation=(), interest-cohort=()'
+  );
+
   // Allow CORS for Farcaster domains
   const origin = request.headers.get('origin');
   if (origin && (
