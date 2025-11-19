@@ -17,6 +17,7 @@ export function middleware(request: NextRequest) {
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "img-src 'self' data: https:",
     "font-src 'self' data: https://fonts.gstatic.com",
+    "media-src 'self' blob:",
     "connect-src 'self' https: wss:",
   ].join('; ');
 
