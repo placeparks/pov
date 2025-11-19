@@ -35,7 +35,7 @@ const contractABI = [
   },
 ] as const;
 
-const CONTRACT_ADDRESS = (process.env.CONTRACT_ADDRESS || '0x0000000000000000000000000000000000000000') as `0x${string}`;
+const CONTRACT_ADDRESS = (process.env.NEXT_PUBLIC_CONTRACT_ADDRESS || '0x0000000000000000000000000000000000000000') as `0x${string}`;
 
 function getBaseUrl(): string {
   if (process.env.NEXT_PUBLIC_URL) {
