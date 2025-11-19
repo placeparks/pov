@@ -107,10 +107,31 @@ export default function RootLayout({
   return (
     <RootProvider>
       <html lang="en">
-        <head>
-          <meta name="fc:miniapp" content={miniAppMetaContent} />
-          <meta httpEquiv="Permissions-Policy" content="microphone=(self)" />
-        </head>
+      <head>
+  <meta name="fc:miniapp" content={miniAppMetaContent} />
+
+  <meta property="fc:frame" content="vNext" />
+  <meta property="fc:frame:image" content={`${rootUrl}/blue-hero.png`} />
+  <meta property="fc:frame:image:aspect_ratio" content="1:1" />
+  <meta property="fc:frame:post_url" content={`${rootUrl}/api/frame`} />
+
+  <meta property="fc:frame:button:1" content="🎤 Mint Your Voice" />
+  <meta property="fc:frame:button:1:action" content="post" />
+  <meta property="fc:frame:button:1:target" content={`${rootUrl}/api/frame`} />
+
+  <meta property="fc:frame:button:2" content="🌐 Open Full App" />
+  <meta property="fc:frame:button:2:action" content="link" />
+  <meta property="fc:frame:button:2:target" content={rootUrl} />
+
+  <meta property="og:title" content="Proof of Voice" />
+  <meta
+    property="og:description"
+    content="Record your voice, analyze its humanity score, and mint it on Base."
+  />
+  <meta property="og:image" content={`${rootUrl}/blue-hero.png`} />
+</head>
+
+
         <body className={`${inter.variable} ${sourceCodePro.variable}`}>
           <FarcasterSDKInit />
           <SafeArea>{children}</SafeArea>
