@@ -16,7 +16,8 @@ try {
   console.warn('ProofOfVoice ABI not found. Please create abis/ProofOfVoice.json');
 }
 
-const CONTRACT_ADDRESS = (process.env.CONTRACT_ADDRESS || '0x...') as Address;
+const CONTRACT_ADDRESS = (process.env.NEXT_PUBLIC_CONTRACT_ADDRESS || '0x...') as Address;
+
 
 export interface VoiceData {
   audioBytes: `0x${string}`;
