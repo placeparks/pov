@@ -11,7 +11,7 @@ export function middleware(request: NextRequest) {
   // Set Content-Security-Policy to allow embedding in Farcaster frames
   // Allow embedding from Farcaster domains, Base.dev preview, and same origin
   const cspHeader = [
-    "frame-ancestors 'self' https://*.farcaster.xyz https://*.warpcast.com https://*.farcaster.org https://farcaster.xyz https://warpcast.com https://base.dev",
+    "frame-ancestors 'self' https://*.farcaster.xyz https://*.warpcast.com https://*.farcaster.org https://farcaster.xyz https://warpcast.com https://base.dev https://*.base.dev",
     "default-src 'self'",
     "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
