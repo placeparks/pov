@@ -30,8 +30,8 @@ app.frame('/', (c) => {
     imageAspectRatio: '1:1',
     intents: [
       <Button value="mint" action="/api/frame/mint">🎤 Mint Your Voice</Button>,
-      <Button action="link" target={ROOT_URL}>🌐 Open Full App</Button>,
-    ],
+      <Button.Link href={ROOT_URL}>🌐 Open Full App</Button.Link>,
+    ] as any,
   });
 });
 
@@ -45,8 +45,8 @@ app.frame('/mint', (c) => {
     image: `${ROOT_URL}/blue-hero.png`,
     imageAspectRatio: '1:1',
     intents: [
-      <Button action="link" target={`${ROOT_URL}?fid=${fid}`}>🚀 Launch Proof of Voice</Button>,
-    ],
+      <Button.Link href={`${ROOT_URL}?fid=${fid}`}>🚀 Launch Proof of Voice</Button.Link>,
+    ] as any,
     title: 'Proof of Voice - Mint Your Voice',
   });
 });
