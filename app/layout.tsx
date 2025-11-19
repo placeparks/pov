@@ -13,6 +13,8 @@ export async function generateMetadata(): Promise<Metadata> {
       ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
       : 'http://localhost:3000');
 
+  const FRAME_URL = `${ROOT_URL}/api/frame`;
+
   return {
     title: 'Proof of Voice - Immortalize Your Voice on Base',
     description: minikitConfig.miniapp.description,
@@ -23,18 +25,23 @@ export async function generateMetadata(): Promise<Metadata> {
       apple: minikitConfig.miniapp.iconUrl || `${ROOT_URL}/blue-icon.png`,
     },
     metadataBase: new URL(ROOT_URL),
+    openGraph: {
+      title: minikitConfig.miniapp.ogTitle,
+      description: minikitConfig.miniapp.ogDescription,
+      images: [minikitConfig.miniapp.ogImageUrl],
+    },
     other: {
-      "fc:frame": JSON.stringify({
-        version: minikitConfig.miniapp.version,
-        imageUrl: minikitConfig.miniapp.heroImageUrl,
-        button: {
-          title: `Mint Your Voice on ${minikitConfig.miniapp.name}`,
-          action: {
-            name: `Launch ${minikitConfig.miniapp.name}`,
-            type: "launch_frame",
-          },
-        },
-      }),
+      // Standard Frame Protocol metadata tags
+      'fc:frame': 'vNext',
+      'fc:frame:image': minikitConfig.miniapp.heroImageUrl,
+      'fc:frame:image:aspect_ratio': '1:1',
+      'fc:frame:button:1': '🎤 Mint Your Voice',
+      'fc:frame:button:1:action': 'post',
+      'fc:frame:button:1:target': FRAME_URL,
+      'fc:frame:button:2': '🌐 Open Full App',
+      'fc:frame:button:2:action': 'link',
+      'fc:frame:button:2:target': ROOT_URL,
+      'fc:frame:post_url': FRAME_URL,
     },
   };
 }
