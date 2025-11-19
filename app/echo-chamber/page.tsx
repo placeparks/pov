@@ -78,13 +78,13 @@ export default function EchoChamber() {
     // Priority 1: Try OnchainKit's composeCastAsync (works in Farcaster frames)
     if (composeCastAsync) {
       try {
-        // Include both the NFT page URL and the image URL for better preview
+        // Include only the NFT image URL for preview
         const imageUrl = `${baseUrl}/api/nft-image/${voice.tokenId}`;
-        console.log('Attempting to compose cast with:', { text: shareText, embeds: [tokenUrl, imageUrl] });
+        console.log('Attempting to compose cast with:', { text: shareText, embeds: [imageUrl] });
         
         const result = await composeCastAsync({
           text: shareText,
-          embeds: [tokenUrl, imageUrl], // Include both page and image for better preview
+          embeds: [imageUrl], // Only include image URL to show NFT image card
         });
         
         console.log('Compose cast result:', result);
