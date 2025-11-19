@@ -1,3 +1,4 @@
+/** @jsxImportSource hono/jsx */
 import { Frog, Button } from 'frog';
 import { devtools } from 'frog/dev';
 import { serveStatic } from 'frog/serve-static';
@@ -9,7 +10,7 @@ const ROOT_URL =
     : 'http://localhost:3000');
 
 // Initialize Frog
-export const app = new Frog({
+const app = new Frog({
   basePath: '/api/frame',
   title: 'Proof of Voice',
   // Hub API for Frame validation (optional but recommended)
@@ -29,15 +30,15 @@ app.frame('/', (c) => {
     image: `${ROOT_URL}/blue-hero.png`, // Your hero image
     imageAspectRatio: '1:1',
     intents: [
-      <Button value="mint" action="/api/frame/mint">🎤 Mint Your Voice</Button>,
-      <Button.Link href={ROOT_URL}>🌐 Open Full App</Button.Link>,
+      <Button key="mint" value="mint" action="/api/frame/mint">🎤 Mint Your Voice</Button>,
+      <Button.Link key="open" href={ROOT_URL}>🌐 Open Full App</Button.Link>,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ] as any,
   });
 });
 
 // Handle the mint button click
 app.frame('/mint', (c) => {
-  const { buttonValue } = c;
   const fid = c.frameData?.fid || '';
   
   // Redirect to the main app for minting
@@ -45,7 +46,8 @@ app.frame('/mint', (c) => {
     image: `${ROOT_URL}/blue-hero.png`,
     imageAspectRatio: '1:1',
     intents: [
-      <Button.Link href={`${ROOT_URL}?fid=${fid}`}>🚀 Launch Proof of Voice</Button.Link>,
+      <Button.Link key="launch" href={`${ROOT_URL}?fid=${fid}`}>🚀 Launch Proof of Voice</Button.Link>,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ] as any,
     title: 'Proof of Voice - Mint Your Voice',
   });
