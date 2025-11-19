@@ -9,6 +9,7 @@ export interface VoiceAnalysis {
   silenceRatio: number;
   spectralCentroid: number;
   zeroCrossingRate: number;
+  averageEnergy: number;
   confidenceScore: number;
   waveform: number[];
 }
@@ -32,6 +33,7 @@ export async function analyzeVoice(audioBlob: Blob): Promise<VoiceAnalysis> {
     silenceRatio: 0,
     spectralCentroid: 0,
     zeroCrossingRate: 0,
+    averageEnergy: 0,
     confidenceScore: 0,
     waveform: []
   };
@@ -50,16 +52,19 @@ export async function analyzeVoice(audioBlob: Blob): Promise<VoiceAnalysis> {
     // 4. Energy Distribution
     analysis.energyDistribution = calculateEnergyDistribution(channelData);
   
-    // 5. Spectral Centroid (frequency characteristics)
+    // 5. Average Energy (for detecting silence/quiet recordings)
+    analysis.averageEnergy = calculateAverageEnergy(channelData);
+  
+    // 6. Spectral Centroid (frequency characteristics)
     analysis.spectralCentroid = calculateSpectralCentroid(channelData, sampleRate);
   
-    // 6. Zero Crossing Rate (voice characteristics)
+    // 7. Zero Crossing Rate (voice characteristics)
     analysis.zeroCrossingRate = calculateZeroCrossingRate(channelData);
   
-    // 7. Generate waveform for visualization
+    // 8. Generate waveform for visualization
     analysis.waveform = generateWaveform(channelData, 50);
   
-    // 8. Calculate confidence score
+    // 9. Calculate confidence score
     analysis.confidenceScore = calculateConfidenceScore(analysis);
   
     await audioContext.close();
@@ -141,6 +146,14 @@ function calculateEnergyDistribution(data: Float32Array): number {
   if (minEnergy === Infinity) minEnergy = 0;
   
   return (maxEnergy - minEnergy) / (maxEnergy + 0.001);
+}
+
+function calculateAverageEnergy(data: Float32Array): number {
+  let totalEnergy = 0;
+  for (let i = 0; i < data.length; i++) {
+    totalEnergy += Math.abs(data[i]);
+  }
+  return totalEnergy / data.length;
 }
 
 function calculateSpectralCentroid(data: Float32Array, sampleRate: number): number {
@@ -243,10 +256,12 @@ function calculateConfidenceScore(analysis: VoiceAnalysis): number {
     score += 10;
   }
   
-  // Ensure minimum score for any recorded audio
-  if (analysis.duration > 0.1) {
-    score = Math.max(score, 50); // Minimum 50% for any valid recording
+  // Average energy check (detect silent/quiet recordings)
+  if (analysis.averageEnergy > 0.01) {
+    score += 5; // Bonus for sufficient energy
   }
+  
+  // No minimum score guarantee - must earn the score through actual speech
   
   return Math.min(100, score);
 }
