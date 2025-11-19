@@ -370,11 +370,33 @@ import { analyzeVoice } from '../utils/voiceAnalysis';
         const recognizedLower = recognizedWord.toLowerCase().trim();
         const assignedLower = assignedWord.toLowerCase().trim();
         
-        // Check for exact match or if the recognized word contains the assigned word
-        // (to handle cases where user says "the word is X" or similar)
-        const wordsMatch = recognizedLower === assignedLower || 
-                          recognizedLower.includes(assignedLower) ||
-                          assignedLower.includes(recognizedLower);
+        // Extract individual words from the recognized text (handles cases like "the word is Privacy")
+        const recognizedWords = recognizedLower.split(/\s+/);
+        
+        // Check for exact match
+        let wordsMatch = recognizedLower === assignedLower;
+        
+        // Check if any word in the recognized text matches the assigned word
+        if (!wordsMatch) {
+          wordsMatch = recognizedWords.some(word => {
+            // Exact match
+            if (word === assignedLower) return true;
+            // Check if word contains the assigned word (handles partial matches)
+            if (word.includes(assignedLower) && assignedLower.length >= 3) return true;
+            // Check if assigned word contains the recognized word (handles abbreviations)
+            if (assignedLower.includes(word) && word.length >= 3) return true;
+            // Handle common variations (e.g., "code" vs "codes", "free" vs "freedom")
+            // Check if words are similar (Levenshtein-like check for short words)
+            if (Math.abs(word.length - assignedLower.length) <= 2) {
+              // Simple similarity check: if one word starts with the other
+              if (word.startsWith(assignedLower.substring(0, Math.min(4, assignedLower.length))) ||
+                  assignedLower.startsWith(word.substring(0, Math.min(4, word.length)))) {
+                return true;
+              }
+            }
+            return false;
+          });
+        }
         
         if (!wordsMatch) {
           setMintError(`Word verification failed. You said "${recognizedWord}" but should have said "${assignedWord}". Please try again.`);
@@ -834,9 +856,22 @@ import { analyzeVoice } from '../utils/voiceAnalysis';
                           </span>
                         </div>
                         <audio src={audioUrl || undefined} controls className="w-full mb-3" />
-                        <div className="text-xs text-gray-400">
+                        <div className="text-xs text-gray-400 mb-2">
                           Size: {audioBlob ? (audioBlob.size / 1024).toFixed(2) : '0'} KB • Duration: {analysisResults ? analysisResults.duration.toFixed(2) : '0'}s
                         </div>
+                        {recognizedWord && (
+                          <div className={`text-xs p-2 rounded ${
+                            recognizedWord.toLowerCase().includes(assignedWord.toLowerCase()) || 
+                            assignedWord.toLowerCase().includes(recognizedWord.toLowerCase())
+                              ? 'bg-green-900/30 text-green-300 border border-green-500/30'
+                              : 'bg-yellow-900/30 text-yellow-300 border border-yellow-500/30'
+                          }`}>
+                            <span className="font-medium">Recognized:</span> "{recognizedWord}" 
+                            {recognizedWord.toLowerCase().includes(assignedWord.toLowerCase()) || 
+                             assignedWord.toLowerCase().includes(recognizedWord.toLowerCase()) 
+                              ? ' ✓' : ` (Expected: "${assignedWord}")`}
+                          </div>
+                        )}
                       </div>
   
                       <div className="bg-black/40 border border-purple-500/30 rounded-lg p-4">
