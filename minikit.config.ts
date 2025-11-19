@@ -22,11 +22,11 @@ export const minikitConfig = {
     screenshotUrls: [`${ROOT_URL}/screenshot-portrait.png`],
     iconUrl: `${ROOT_URL}/blue-icon.png`,
     splashImageUrl: `${ROOT_URL}/blue-hero.png`,
-    splashBackgroundColor: "#4C1D95", // Deep indigo matching app gradient
+    splashBackgroundColor: "#4C1D95", 
     homeUrl: ROOT_URL,
     webhookUrl: `${ROOT_URL}/api/webhook`,
     primaryCategory: "social",
-    tags: ["voice", "nft", "base", "farcaster", "audio", "humanity", "proof-of-voice"],
+    tags: ["voice", "nft", "base", "farcaster", "proof-of-voice"],
     heroImageUrl: `${ROOT_URL}/blue-hero.png`,
     tagline: "Your voice, immortalized on-chain",
     ogTitle: "Proof of Voice",
