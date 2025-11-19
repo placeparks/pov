@@ -28,7 +28,7 @@ export const minikitConfig = {
     primaryCategory: "social",
     tags: ["voice", "nft", "base", "farcaster", "proof-of-voice"],
     heroImageUrl: `${ROOT_URL}/blue-hero.png`,
-    tagline: "Your voice, immortalized on-chain",
+    tagline: "Your voice, immortalized",
     ogTitle: "Proof of Voice",
     ogDescription: "Record your voice, analyze its humanity score, and mint it as a unique NFT on Base.",
     ogImageUrl: `${ROOT_URL}/blue-hero.png`,
