@@ -14,7 +14,7 @@ const contractABI = [
 ] as const;
 
 // Your contract address from environment variable
-const CONTRACT_ADDRESS = (process.env.CONTRACT_ADDRESS || '0x0000000000000000000000000000000000000000') as `0x${string}`;
+const CONTRACT_ADDRESS = (process.env.NEXT_PUBLIC_CONTRACT_ADDRESS || '0x0000000000000000000000000000000000000000') as `0x${string}`;
 
 export async function GET(
   request: NextRequest,
