@@ -456,7 +456,7 @@ import { analyzeVoice } from '../utils/voiceAnalysis';
           return;
         }
 
-        const contractAddress = process.env.CONTRACT_ADDRESS as `0x${string}`;
+        const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`;
         if (!contractAddress || contractAddress === '0x...' || contractAddress === '0x0000000000000000000000000000000000000000') {
           console.error('Contract address not set');
           setLoadingAudio(null);
