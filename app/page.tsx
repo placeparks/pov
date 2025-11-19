@@ -1,5 +1,6 @@
 "use client";
 import { useMiniKit } from "@coinbase/onchainkit/minikit";
+import { sdk } from "@farcaster/miniapp-sdk";
 import { useState, useRef, useEffect } from 'react';
 import { Mic, Square, Upload, Volume2, Users, Heart, Shield, History, Sparkles, AlertCircle, CheckCircle, LucideIcon, Loader2 } from 'lucide-react';
 import Link from 'next/link';
@@ -17,7 +18,6 @@ import { useProofOfVoice } from '../hooks/useContract';
 import { useAllVoices } from '../hooks/useAllVoices';
 import { audioToHex, hexToAudio } from '../utils/audioCompression';
 import { analyzeVoice } from '../utils/voiceAnalysis';
-
   
   // Type definitions
   type Category = 'cypherpunk' | 'freedom' | 'empathy' | 'heroes' | 'history' | 'life';
@@ -970,11 +970,23 @@ import { analyzeVoice } from '../utils/voiceAnalysis';
     const { address, status } = useAccount();
     const [initLoading, setInitLoading] = useState(true);
 
-    // Initialize MiniKit frame readiness
+    // Initialize MiniKit frame readiness and Farcaster SDK
     useEffect(() => {
-      if (setFrameReady) {
-        setFrameReady();
-      }
+      const initializeSDK = async () => {
+        try {
+          // Call Farcaster SDK ready() to dismiss splash screen
+          await sdk.actions.ready();
+        } catch (error) {
+          console.error('Error calling sdk.actions.ready():', error);
+        }
+        
+        // Also call OnchainKit's setFrameReady if available
+        if (setFrameReady) {
+          setFrameReady();
+        }
+      };
+      
+      initializeSDK();
       
       const timer = setTimeout(() => {
         setInitLoading(false);
