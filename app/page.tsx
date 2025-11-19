@@ -170,6 +170,7 @@ import { analyzeVoice } from '../utils/voiceAnalysis';
     const [playingTokenId, setPlayingTokenId] = useState<number | null>(null);
     const [loadingAudio, setLoadingAudio] = useState<number | null>(null);
     const [recognizedWord, setRecognizedWord] = useState<string | null>(null);
+    const [showManifesto, setShowManifesto] = useState(false);
     
     // Contract hook
     const { mint, isMinting: isContractMinting, mintSuccess, hasMinted } = useProofOfVoice();
@@ -696,11 +697,397 @@ import { analyzeVoice } from '../utils/voiceAnalysis';
               <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-6">
                 Speak a single powerful word. Your voice will be analyzed and stored on-chain forever.
               </p>
+              
+              <div className="flex justify-center mb-4">
+                <button
+                  onClick={() => setShowManifesto(!showManifesto)}
+                  className="px-6 py-2 bg-purple-600/30 hover:bg-purple-600/50 border border-purple-500/30 rounded-lg transition-all text-sm font-medium flex items-center gap-2"
+                >
+                  <History className="w-4 h-4" />
+                  {showManifesto ? 'Hide Manifesto' : 'View Manifesto'}
+                </button>
+              </div>
+
+              {showManifesto && (
+                <>
+                  <style dangerouslySetInnerHTML={{__html: `
+                    .manifesto::-webkit-scrollbar {
+                      width: 8px;
+                    }
+                    .manifesto::-webkit-scrollbar-track {
+                      background: rgba(139, 92, 246, 0.1);
+                      border-radius: 4px;
+                    }
+                    .manifesto::-webkit-scrollbar-thumb {
+                      background: rgba(139, 92, 246, 0.5);
+                      border-radius: 4px;
+                    }
+                    .manifesto::-webkit-scrollbar-thumb:hover {
+                      background: rgba(139, 92, 246, 0.7);
+                    }
+                  `}} />
+                  <div className="manifesto relative bg-gradient-to-br from-black/60 via-purple-900/20 to-indigo-900/20 backdrop-blur-sm border-2 border-purple-500/40 rounded-2xl p-8 max-w-4xl mx-auto mb-6 max-h-[600px] overflow-y-auto shadow-2xl shadow-purple-900/20">
+                  
+                  <div className="space-y-6 text-gray-200">
+                    {/* Opening Statement */}
+                    <div className="space-y-4">
+                      <p className="text-lg leading-relaxed text-white font-light">
+                        In 2025, everything sounds human.
+                      </p>
+                      <p className="text-base leading-relaxed text-gray-300">
+                        AI whispers. AI shouts. AI imitates emotion better than some people. The internet is drowning in artificial voices—perfect, flawless, soulless.
+                      </p>
+                    </div>
+
+                    {/* Key Statement */}
+                    <div className="relative py-4 px-6 bg-gradient-to-r from-purple-600/20 to-blue-600/20 border-l-4 border-purple-400 rounded-r-lg">
+                      <p className="text-lg font-bold bg-gradient-to-r from-purple-300 to-blue-300 bg-clip-text text-transparent">
+                        Your voice is the last frontier of truth.
+                      </p>
+                      <p className="text-base leading-relaxed text-gray-300 mt-2">
+                        Your breath, your imperfections, your micro-pauses… these are the fingerprints of consciousness.
+                      </p>
+                    </div>
+
+                    {/* What is Proof of Voice */}
+                    <div className="space-y-3">
+                      <p className="text-base leading-relaxed">
+                        Proof of Voice transforms a single spoken word into a permanent on-chain artifact.
+                      </p>
+                      <div className="flex flex-col gap-2 ml-4">
+                        <p className="text-base leading-relaxed text-gray-400 italic">
+                          Not a clip.
+                        </p>
+                        <p className="text-base leading-relaxed text-gray-400 italic">
+                          Not a file.
+                        </p>
+                        <p className="text-base leading-relaxed text-purple-300 font-medium">
+                          A human signature encoded in the Base blockchain forever.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Emphasis Section */}
+                    <div className="py-4 px-6 bg-black/30 border border-purple-500/30 rounded-lg">
+                      <p className="text-lg font-bold text-purple-300 mb-2">
+                        It&apos;s more than an NFT.
+                      </p>
+                      <p className="text-lg font-bold text-purple-300">
+                        It&apos;s a timestamp of your existence.
+                      </p>
+                    </div>
+
+                    {/* When you speak */}
+                    <div className="space-y-3">
+                      <p className="text-base leading-relaxed font-medium text-white">
+                        When you speak:
+                      </p>
+                      <ul className="list-none space-y-2 ml-2">
+                        <li className="flex items-start gap-3">
+                          <span className="text-purple-400 mt-1">▸</span>
+                          <span className="text-base leading-relaxed">Your breath is detected.</span>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <span className="text-purple-400 mt-1">▸</span>
+                          <span className="text-base leading-relaxed">Your emotional sharpness is analyzed.</span>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <span className="text-purple-400 mt-1">▸</span>
+                          <span className="text-base leading-relaxed">Your micro-variations are measured.</span>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <span className="text-purple-400 mt-1">▸</span>
+                          <span className="text-base leading-relaxed">Your humanity is scored.</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    {/* Anti-bot statement */}
+                    <div className="space-y-3 py-4 border-t border-b border-purple-500/20">
+                      <p className="text-base leading-relaxed font-medium text-white">
+                        No bot can fake these imperfections.
+                      </p>
+                      <p className="text-base leading-relaxed text-gray-300">
+                        No AI can manufacture what your lungs create naturally.
+                      </p>
+                    </div>
+
+                    {/* Verification process */}
+                    <p className="text-base leading-relaxed">
+                      Once verified, your voice is compressed, encoded, and written on-chain as a unique NFT, alongside your humanity score, emotional tone, category identity, and waveform fingerprint.
+                    </p>
+
+                    {/* One voice per wallet */}
+                    <div className="py-4 px-6 bg-gradient-to-r from-red-900/20 to-purple-900/20 border border-red-500/30 rounded-lg">
+                      <p className="text-lg font-bold text-red-300 mb-2">
+                        There is only one voice per wallet.
+                      </p>
+                      <p className="text-lg font-bold text-red-300 mb-2">
+                        One chance.
+                      </p>
+                      <p className="text-lg font-bold text-red-300">
+                        One real moment in time.
+                      </p>
+                    </div>
+
+                    {/* Closing statement */}
+                    <p className="text-base leading-relaxed italic text-gray-300">
+                      Years from now, when synthetic voices dominate the world, these NFTs will stand as proof that we were here — alive, breathing, emotional.
+                    </p>
+
+                    {/* Artwork Section */}
+                    <div className="mt-8 pt-6 border-t-2 border-purple-500/30">
+                      <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent flex items-center gap-2">
+                        <Sparkles className="w-6 h-6 text-purple-400" />
+                        What Makes the Artwork Exclusive?
+                      </h3>
+                      <p className="text-base leading-relaxed mb-4">
+                        Your Proof of Voice NFT generates custom art directly from your voice data.
+                      </p>
+                      <p className="text-base leading-relaxed mb-6 text-gray-300">
+                        No two pieces can ever match because each element is tied to your sound:
+                      </p>
+
+                      <div className="grid gap-4">
+                        <div className="bg-black/30 border border-blue-500/20 rounded-lg p-4 hover:border-blue-400/40 transition-colors">
+                          <p className="font-bold text-blue-400 mb-2 flex items-center gap-2">
+                            <span className="text-purple-400">1.</span> Waveform-Fingerprint Design
+                          </p>
+                          <p className="text-sm text-gray-300 leading-relaxed">The system converts your real audio waveform into a visual fingerprint — peaks, valleys, tremble, breath dips — all mapped into a generative pattern.</p>
+                        </div>
+                        <div className="bg-black/30 border border-blue-500/20 rounded-lg p-4 hover:border-blue-400/40 transition-colors">
+                          <p className="font-bold text-blue-400 mb-2 flex items-center gap-2">
+                            <span className="text-purple-400">2.</span> Emotion-Based Color Mapping
+                          </p>
+                          <p className="text-sm text-gray-300 leading-relaxed">Your emotional tone (powerful, whispered, joyful, defiant, reverent, excited) determines the color palette and energy gradients.</p>
+                        </div>
+                        <div className="bg-black/30 border border-blue-500/20 rounded-lg p-4 hover:border-blue-400/40 transition-colors">
+                          <p className="font-bold text-blue-400 mb-2 flex items-center gap-2">
+                            <span className="text-purple-400">3.</span> Category Aura
+                          </p>
+                          <p className="text-sm text-gray-300 leading-relaxed">Your chosen category (cypherpunk, freedom, empathy, heroes, history, life) generates a thematic lighting layer unique to that domain.</p>
+                        </div>
+                        <div className="bg-black/30 border border-blue-500/20 rounded-lg p-4 hover:border-blue-400/40 transition-colors">
+                          <p className="font-bold text-blue-400 mb-2 flex items-center gap-2">
+                            <span className="text-purple-400">4.</span> Humanity Score Integration
+                          </p>
+                          <p className="text-sm text-gray-300 leading-relaxed">Higher humanity scores produce richer, more detailed patterns — a visual celebration of your authenticity.</p>
+                        </div>
+                        <div className="bg-black/30 border border-blue-500/20 rounded-lg p-4 hover:border-blue-400/40 transition-colors">
+                          <p className="font-bold text-blue-400 mb-2 flex items-center gap-2">
+                            <span className="text-purple-400">5.</span> On-Chain SVG Generation
+                          </p>
+                          <p className="text-sm text-gray-300 leading-relaxed">The artwork is not pre-made. It&apos;s generated entirely on-chain at mint time from your real audio metrics. No template. No repetition. No re-creation possible.</p>
+                        </div>
+                      </div>
+
+                      <p className="text-base leading-relaxed mt-6 font-medium text-purple-300">
+                        Your artwork is literally shaped by your voice, making it impossible for anyone — human or AI — to reproduce.
+                      </p>
+                    </div>
+
+                    {/* FAQ Section */}
+                    <div className="mt-8 pt-6 border-t-2 border-purple-500/30">
+                      <h3 className="text-2xl font-bold mb-6 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent flex items-center gap-2">
+                        <History className="w-6 h-6 text-purple-400" />
+                        FAQ
+                      </h3>
+
+                      <div className="space-y-5">
+                        <div className="bg-black/20 border border-purple-500/20 rounded-lg p-5 hover:border-purple-400/30 transition-colors">
+                          <p className="font-bold text-blue-400 mb-3 text-lg">What am I minting?</p>
+                          <p className="text-sm text-gray-300 mb-2">A 100% on-chain voice artifact that includes:</p>
+                          <ul className="list-none space-y-1.5 ml-2 mb-3">
+                            <li className="flex items-start gap-2">
+                              <span className="text-purple-400 mt-1 text-xs">•</span>
+                              <span className="text-sm text-gray-300">Your compressed audio bytes</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <span className="text-purple-400 mt-1 text-xs">•</span>
+                              <span className="text-sm text-gray-300">A waveform-fingerprint artwork</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <span className="text-purple-400 mt-1 text-xs">•</span>
+                              <span className="text-sm text-gray-300">Emotion signature</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <span className="text-purple-400 mt-1 text-xs">•</span>
+                              <span className="text-sm text-gray-300">Category identity</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <span className="text-purple-400 mt-1 text-xs">•</span>
+                              <span className="text-sm text-gray-300">Humanity score</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <span className="text-purple-400 mt-1 text-xs">•</span>
+                              <span className="text-sm text-gray-300">Timestamp</span>
+                            </li>
+                          </ul>
+                          <p className="text-sm text-purple-300 font-medium">All stored directly on Base L2.</p>
+                        </div>
+
+                        <div className="bg-black/20 border border-purple-500/20 rounded-lg p-5 hover:border-purple-400/30 transition-colors">
+                          <p className="font-bold text-blue-400 mb-3 text-lg">How is this anti-bot?</p>
+                          <p className="text-sm text-gray-300 mb-2">We detect signals AI struggles to fake:</p>
+                          <ul className="list-none space-y-1.5 ml-2 mb-3">
+                            <li className="flex items-start gap-2">
+                              <span className="text-purple-400 mt-1 text-xs">•</span>
+                              <span className="text-sm text-gray-300">Breath patterns</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <span className="text-purple-400 mt-1 text-xs">•</span>
+                              <span className="text-sm text-gray-300">Emotional micro-variations</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <span className="text-purple-400 mt-1 text-xs">•</span>
+                              <span className="text-sm text-gray-300">Real ambient noise</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <span className="text-purple-400 mt-1 text-xs">•</span>
+                              <span className="text-sm text-gray-300">Human dynamic range</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <span className="text-purple-400 mt-1 text-xs">•</span>
+                              <span className="text-sm text-gray-300">Natural silence gaps</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <span className="text-purple-400 mt-1 text-xs">•</span>
+                              <span className="text-sm text-gray-300">Imperfect waveform irregularities</span>
+                            </li>
+                          </ul>
+                          <p className="text-sm text-red-300 font-medium">If any of these markers are missing, minting is blocked.</p>
+                        </div>
+
+                        <div className="bg-black/20 border border-purple-500/20 rounded-lg p-5 hover:border-purple-400/30 transition-colors">
+                          <p className="font-bold text-blue-400 mb-3 text-lg">Why is the artwork exclusive?</p>
+                          <p className="text-sm text-gray-300 leading-relaxed">Because it is generated from your actual sound, not templates. Every peak, breath, silence, emotion, and category transforms into art. It is mathematically impossible for two artworks to match.</p>
+                        </div>
+
+                        <div className="bg-black/20 border border-purple-500/20 rounded-lg p-5 hover:border-purple-400/30 transition-colors">
+                          <p className="font-bold text-blue-400 mb-3 text-lg">Where can I trade these NFTs?</p>
+                          <p className="text-sm text-gray-300 mb-2">Technically anywhere — OpenSea, Rarible, etc. But the native marketplace gives you:</p>
+                          <ul className="list-none space-y-1.5 ml-2 mb-3">
+                            <li className="flex items-start gap-2">
+                              <span className="text-purple-400 mt-1 text-xs">•</span>
+                              <span className="text-sm text-gray-300">Near-0 fees</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <span className="text-purple-400 mt-1 text-xs">•</span>
+                              <span className="text-sm text-gray-300">The best waveform viewer</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <span className="text-purple-400 mt-1 text-xs">•</span>
+                              <span className="text-sm text-gray-300">Humanity score display</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <span className="text-purple-400 mt-1 text-xs">•</span>
+                              <span className="text-sm text-gray-300">A curated real-human ecosystem</span>
+                            </li>
+                          </ul>
+                          <p className="text-sm text-purple-300 font-medium">It&apos;s built specifically for voice NFTs.</p>
+                        </div>
+
+                        <div className="bg-black/20 border border-purple-500/20 rounded-lg p-5 hover:border-purple-400/30 transition-colors">
+                          <p className="font-bold text-blue-400 mb-3 text-lg">Can I mint more than one?</p>
+                          <p className="text-sm text-gray-300">No. One voice per wallet. One imprint of your humanity.</p>
+                        </div>
+
+                        <div className="bg-black/20 border border-purple-500/20 rounded-lg p-5 hover:border-purple-400/30 transition-colors">
+                          <p className="font-bold text-blue-400 mb-3 text-lg">What happens if my humanity score is low?</p>
+                          <p className="text-sm text-gray-300">You&apos;ll be prompted to re-record until your natural human traits pass verification.</p>
+                        </div>
+
+                        <div className="bg-black/20 border border-purple-500/20 rounded-lg p-5 hover:border-purple-400/30 transition-colors">
+                          <p className="font-bold text-blue-400 mb-3 text-lg">Is everything really on-chain?</p>
+                          <p className="text-sm text-gray-300">Yes — audio bytes, artwork, metadata, waveform, classification, everything. Your voice becomes immutable code.</p>
+                        </div>
+
+                        <div className="bg-black/20 border border-purple-500/20 rounded-lg p-5 hover:border-purple-400/30 transition-colors">
+                          <p className="font-bold text-blue-400 mb-3 text-lg">Is there any utility?</p>
+                          <p className="text-sm text-gray-300 mb-3">Not yet — and that&apos;s intentional. Proof of Voice starts as a digital relic, not a utility token. But future potential is wide open. Early minters will stand at the foundation of whatever emerges next:</p>
+                          <ul className="list-none space-y-1.5 ml-2 mb-3">
+                            <li className="flex items-start gap-2">
+                              <span className="text-purple-400 mt-1 text-xs">•</span>
+                              <span className="text-sm text-gray-300">Human-verified identity badges</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <span className="text-purple-400 mt-1 text-xs">•</span>
+                              <span className="text-sm text-gray-300">Voice-based access layers</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <span className="text-purple-400 mt-1 text-xs">•</span>
+                              <span className="text-sm text-gray-300">On-chain reputation tied to your humanity score</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <span className="text-purple-400 mt-1 text-xs">•</span>
+                              <span className="text-sm text-gray-300">Farcaster voice reactions</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <span className="text-purple-400 mt-1 text-xs">•</span>
+                              <span className="text-sm text-gray-300">Exclusive Proof-of-Voice events, drops, or collaborations</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <span className="text-purple-400 mt-1 text-xs">•</span>
+                              <span className="text-sm text-gray-300">Real-world history archive of early human voice signatures</span>
+                            </li>
+                          </ul>
+                          <p className="text-sm text-purple-300 font-medium italic">Nothing is promised. Everything is possible. Early voices become part of the origin story.</p>
+                        </div>
+
+                        <div className="bg-black/20 border border-purple-500/20 rounded-lg p-5 hover:border-purple-400/30 transition-colors">
+                          <p className="font-bold text-blue-400 mb-3 text-lg">What is the Echo Chamber?</p>
+                          <p className="text-sm text-gray-300">A real-time gallery of all minted human voices — a living on-chain archive of consciousness.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                </>
+              )}
+              
               <div className="bg-purple-900/30 border border-purple-500/30 rounded-lg p-4 max-w-xl mx-auto">
                 <p className="text-sm text-gray-300">
                   <strong className="text-purple-400">The Innovation:</strong> Real-time voice analysis verifies you&apos;re human. 
                   We check for breath sounds, natural variation, and emotional authenticity. Bots can&apos;t fake being alive.
                 </p>
+              </div>
+
+              {/* Powerful Call to Action */}
+              <div className="mt-12 mb-8 max-w-3xl mx-auto">
+                <div className="relative">
+                  {/* Glowing background effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 via-red-600/20 to-purple-600/20 blur-3xl rounded-3xl"></div>
+                  
+                  {/* Main content */}
+                  <div className="relative bg-gradient-to-br from-black/80 via-purple-900/40 to-black/80 border-2 border-purple-500/50 rounded-2xl p-8 md:p-12 shadow-2xl">
+                    <div className="space-y-5 text-center">
+                      <p className="text-2xl md:text-3xl font-bold text-white leading-tight">
+                        This isn&apos;t a collectible.
+                      </p>
+                      
+                      <div className="space-y-3">
+                        <p className="text-xl md:text-2xl font-bold bg-gradient-to-r from-purple-400 via-red-400 to-purple-400 bg-clip-text text-transparent animate-pulse">
+                          It&apos;s resistance.
+                        </p>
+                        <p className="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
+                          It&apos;s permanence.
+                        </p>
+                        <p className="text-xl md:text-2xl font-bold bg-gradient-to-r from-purple-300 to-white bg-clip-text text-transparent">
+                          It&apos;s you.
+                        </p>
+                      </div>
+
+                      <div className="pt-4">
+                        <p className="text-3xl md:text-4xl font-black bg-gradient-to-r from-red-400 via-purple-400 to-red-400 bg-clip-text text-transparent mb-3 tracking-tight">
+                          Mint your existence.
+                        </p>
+                        <p className="text-xl md:text-2xl font-bold text-gray-200 italic">
+                          Leave an echo no AI can erase.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
   
