@@ -17,7 +17,7 @@ const buildMiniAppMetaContent = (rootUrl: string) =>
     version: minikitConfig.miniapp.version,
     imageUrl: minikitConfig.miniapp.heroImageUrl,
     button: {
-      title: minikitConfig.miniapp.buttonTitle || "🎤 Mint Your Voice",
+      title: (minikitConfig.miniapp as any).buttonTitle || "🎤 Mint Your Voice",
       action: {
         type: "launch_miniapp",
         url: rootUrl,
@@ -64,7 +64,7 @@ export async function generateMetadata(): Promise<Metadata> {
       "fc:frame:image": minikitConfig.miniapp.heroImageUrl,
       "fc:frame:image:aspect_ratio": "1:1",
       "fc:frame:button:1":
-        minikitConfig.miniapp.buttonTitle || "🎤 Mint Your Voice",
+        (minikitConfig.miniapp as any).buttonTitle || "🎤 Mint Your Voice",
       "fc:frame:button:1:action": "post",
       "fc:frame:button:1:target": FRAME_URL,
       "fc:frame:button:2": "🌐 Open Full App",
