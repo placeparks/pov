@@ -13,15 +13,22 @@ const resolveRootUrl = () =>
     : "http://localhost:3000");
 
 const buildMiniAppMetaContent = (rootUrl: string) => {
-  const miniapp = minikitConfig.miniapp as typeof minikitConfig.miniapp & { buttonTitle?: string };
+  // Use 3:2 image for embed preview (or fallback to hero image)
+  // Note: For best results, create a 3:2 image (e.g., 1200x800px) at /blue-hero-3x2.png
+  const embedImageUrl = minikitConfig.miniapp.heroImageUrl; // Will use hero image, but ideally should be 3:2
+  const splashImageUrl = minikitConfig.miniapp.iconUrl || `${rootUrl}/blue-icon.png`;
+  
   return JSON.stringify({
-    version: minikitConfig.miniapp.version,
-    imageUrl: minikitConfig.miniapp.heroImageUrl,
+    version: "1", // Must be exactly "1" as string
+    imageUrl: embedImageUrl, // Should be 3:2 aspect ratio, absolute HTTPS URL
     button: {
-      title: miniapp.buttonTitle || "🎤 Mint Your Voice",
+      title: minikitConfig.miniapp.name || "Proof of Voice", // <= 32 chars
       action: {
-        type: "launch_miniapp",
-        url: rootUrl,
+        type: "launch_frame", // Must be "launch_frame" or "view_token" (not "launch_miniapp")
+        name: minikitConfig.miniapp.name || "Proof of Voice", // Required field
+        url: rootUrl, // Launch URL
+        splashImageUrl: splashImageUrl, // 200x200px recommended
+        splashBackgroundColor: minikitConfig.miniapp.splashBackgroundColor || "#000000",
       },
     },
   });
